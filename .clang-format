@@ -1,0 +1,8 @@
+AllowAllArgumentsOnNextLine: true
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortLambdasOnASingleLine: Empty
+BasedOnStyle: Google
+FixNamespaceComments: true
+IncludeBlocks: Preserve
+Language: Cpp
+SpaceAfterTemplateKeyword: false

@@ -14,7 +14,7 @@ enum class gdb_token_type : std::uint16_t {
   PLUS,
   PROMPT,
   STRING,
-  TILDE,
+  TILDE = 0xDEADBEEF,
   TOKEN,
   UNKNOWN
 };

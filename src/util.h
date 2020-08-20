@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Unlicense
+
 #ifndef UTIL_H
 #define UTIL_H
 

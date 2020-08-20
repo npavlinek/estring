@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Unlicense
+
 #include <cctype>
 #include <memory>
 #include <sstream>

@@ -20,7 +20,7 @@ int main(int argc, const char** argv) {
       break;
     }
 
-    enum_info einfo;
+    enum_info einfo{};
     token = pc.expect_and_consume(cpp_token_type::IDENT, "enum");
 
     token = pc.peek_token();
@@ -31,8 +31,17 @@ int main(int argc, const char** argv) {
       einfo.scoped = false;
     }
 
-    token = pc.expect_and_consume(cpp_token_type::IDENT);
-    einfo.name = std::move(token->lexeme);
+    // This is a bit of a hack. Because of the way this loop works, it treats
+    // any 'enum' it encounters as a keyword, this is a problem if that 'enum'
+    // is not actually a keyword (e.g. 'enum' appears in a comment).
+    //
+    // So here we check if the token after that 'enum' is an IDENT and we read
+    // the enum name if that's the case, otherwise we ignore it.
+    token = pc.peek_token();
+    if (token->type == cpp_token_type::IDENT) {
+      token = pc.next_token();
+      einfo.name = std::move(token->lexeme);
+    }
 
     token = pc.peek_token();
     if (token->type == cpp_token_type::COLON) {
@@ -41,10 +50,20 @@ int main(int argc, const char** argv) {
       einfo.type = std::move(token->lexeme);
     }
 
+    token = pc.peek_token();
+    if (token->type == cpp_token_type::SEMICOLON ||
+        token->type != cpp_token_type::OPEN_CURLY_BRACE) {
+      pc.next_token();
+      continue;
+    }
     pc.expect_and_consume(cpp_token_type::OPEN_CURLY_BRACE);
 
     token = pc.peek_token();
     while (token->type != cpp_token_type::CLOSE_CURLY_BRACE) {
+      token = pc.peek_token();
+      if (token->type != cpp_token_type::IDENT) {
+        break;
+      }
       token = pc.expect_and_consume(cpp_token_type::IDENT);
       const auto val_name = std::move(token->lexeme);
       einfo.values[val_name];
@@ -69,8 +88,13 @@ int main(int argc, const char** argv) {
   }
 
   for (const auto& e : enums) {
-    std::cout << "const char* to_string(const " << e.name << " type) {\n"
-              << "  switch (type) {\n";
+    if (e.name.size() > 0) {
+      std::cout << "const char* to_string(const " << e.name << " type) {\n"
+                << "  switch (type) {\n";
+    } else {
+      std::cout << "const char* to_string(const int type) {\n"
+                << "  switch (type) {\n";
+    }
 
     for (const auto& val : e.values) {
       if (e.scoped) {
@@ -85,7 +109,7 @@ int main(int argc, const char** argv) {
 
     std::cout << "  }\n"
               << "  return \"\";\n"
-              << "}\n";
+              << "}\n\n";
   }
 
   return 0;

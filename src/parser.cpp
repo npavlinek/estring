@@ -105,7 +105,7 @@ std::unique_ptr<cpp_token> parse_context::next_token() {
       consume_whitespace();
       continue;
     } else {
-      m_last_token_size = 0;
+      m_last_token_size = 1;
       token->type = cpp_token_type::UNKNOWN;
     }
 

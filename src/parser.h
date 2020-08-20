@@ -6,7 +6,7 @@
 #include <memory>
 #include <sstream>
 #include <string>
-#include <unordered_map>
+#include <vector>
 
 #include "util.h"
 
@@ -58,7 +58,7 @@ struct enum_info {
   bool scoped;
   std::string name;
   std::string type;
-  std::unordered_map<std::string, std::string> values;
+  std::vector<std::string> values;
 };
 
 #endif  // PARSER_H

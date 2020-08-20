@@ -67,14 +67,16 @@ int main(int argc, const char** argv) {
         break;
       }
       token = pc.expect_and_consume(cpp_token_type::IDENT);
-      const auto val_name = std::move(token->lexeme);
-      einfo.values[val_name];
+      einfo.values.emplace_back(std::move(token->lexeme));
 
       token = pc.peek_token();
       if (token->type == cpp_token_type::EQUALS) {
-        pc.next_token();
-        token = pc.expect_and_consume(cpp_token_type::INTEGER);
-        einfo.values[val_name] = token->lexeme;
+        for (auto t = pc.peek_token();
+             t->type != cpp_token_type::COMMA &&
+             t->type != cpp_token_type::CLOSE_CURLY_BRACE;
+             t = pc.peek_token()) {
+          pc.next_token();
+        }
       }
 
       token = pc.peek_token();
@@ -100,12 +102,11 @@ int main(int argc, const char** argv) {
 
     for (const auto& val : e.values) {
       if (e.scoped) {
-        std::cout << "    case " << e.name << "::" << val.first << ":\n"
-                  << "      return \"" << e.name << "::" << val.first
-                  << "\";\n";
+        std::cout << "    case " << e.name << "::" << val << ":\n"
+                  << "      return \"" << e.name << "::" << val << "\";\n";
       } else {
-        std::cout << "    case " << val.first << ":\n"
-                  << "      return \"" << val.first << "\";\n";
+        std::cout << "    case " << val << ":\n"
+                  << "      return \"" << val << "\";\n";
       }
     }
 

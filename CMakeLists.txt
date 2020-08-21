@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.9)
 
 set(PNAME enum_to_string)
-set(EXECUTABLE_NAME ${PNAME})
+string(REPLACE "_" "-" EXECUTABLE_NAME ${PNAME})
 
 project(
   ${PNAME}
@@ -23,6 +23,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # won't be able to link properly since there's no .lib file accompanying the
 # .dll file. Static linking works just fine.
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+option(BUILD_TESTS "Build tests")
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   set(compiler_flags
@@ -83,3 +85,8 @@ endif()
 
 add_subdirectory(src)
 target_compile_options(${EXECUTABLE_NAME} PRIVATE ${compiler_flags})
+
+if(BUILD_TESTS)
+  add_subdirectory(test)
+  target_compile_options(run-tests PRIVATE ${compiler_flags})
+endif()

@@ -1,17 +1,133 @@
 // SPDX-License-Identifier: Unlicense
 
+#include <cassert>
 #include <cctype>
+#include <fstream>
 #include <memory>
 #include <sstream>
 #include <stdexcept>
 
 #include "parser.h"
+#include "util.h"
 
 #define FOR_EACH_CHAR(var) \
   for (var = next_char(); var != EOF; var = next_char())
 
-parse_context::parse_context(const char* filename)
-    : m_buffer(read_file(filename)), m_last_token_size{} {}
+parse_context::parse_context(const std::string& code)
+    : m_buffer(code), m_last_token_size{} {}
+
+std::vector<enum_info> parse_context::parse() {
+  std::vector<enum_info> enums;
+
+  for (;;) {
+    discard_until(cpp_token_type::IDENT, "enum");
+
+    auto token = peek_token();
+    if (token->type == cpp_token_type::EOS) {
+      break;
+    }
+
+    enum_info einfo{};
+    token = expect_and_consume(cpp_token_type::IDENT, "enum");
+
+    token = peek_token();
+    if (token->lexeme == "class" || token->lexeme == "struct") {
+      next_token();
+      einfo.scoped = true;
+    } else {
+      einfo.scoped = false;
+    }
+
+    // This is a bit of a hack. Because of the way this loop works, it treats
+    // any 'enum' it encounters as a keyword, this is a problem if that 'enum'
+    // is not actually a keyword (e.g. 'enum' appears in a comment).
+    //
+    // So here we check if the token after that 'enum' is an IDENT and we read
+    // the enum name if that's the case, otherwise we ignore it.
+    token = peek_token();
+    if (token->type == cpp_token_type::IDENT) {
+      token = next_token();
+      einfo.name = std::move(token->lexeme);
+    }
+
+    token = peek_token();
+    if (token->type == cpp_token_type::COLON) {
+      next_token();
+      token = expect_and_consume(cpp_token_type::IDENT);
+      einfo.type = std::move(token->lexeme);
+    }
+
+    token = peek_token();
+    if (token->type == cpp_token_type::SEMICOLON ||
+        token->type != cpp_token_type::OPEN_CURLY_BRACE) {
+      next_token();
+      continue;
+    }
+    expect_and_consume(cpp_token_type::OPEN_CURLY_BRACE);
+
+    token = peek_token();
+    while (token->type != cpp_token_type::CLOSE_CURLY_BRACE) {
+      token = peek_token();
+      if (token->type != cpp_token_type::IDENT) {
+        break;
+      }
+      token = expect_and_consume(cpp_token_type::IDENT);
+      einfo.values.emplace_back(std::move(token->lexeme));
+
+      token = peek_token();
+      if (token->type == cpp_token_type::EQUALS) {
+        for (auto t = peek_token();
+             t->type != cpp_token_type::COMMA &&
+             t->type != cpp_token_type::CLOSE_CURLY_BRACE;
+             t = peek_token()) {
+          next_token();
+        }
+      }
+
+      token = peek_token();
+      if (token->type == cpp_token_type::COMMA) {
+        next_token();
+      }
+    }
+
+    token = expect_and_consume(cpp_token_type::CLOSE_CURLY_BRACE);
+    token = expect_and_consume(cpp_token_type::SEMICOLON);
+
+    enums.emplace_back(einfo);
+  }
+
+  return enums;
+}
+
+std::string parse_context::gen_code(const std::vector<enum_info>& enums) {
+  std::ostringstream buf;
+
+  for (const auto& e : enums) {
+    if (e.name.size() > 0) {
+      buf << "const char* to_string(const " << e.name << " type) {\n"
+          << "  switch (type) {\n";
+    } else {
+      buf << "const char* to_string(const int type) {\n"
+          << "  switch (type) {\n";
+    }
+
+    for (const auto& val : e.values) {
+      if (e.scoped) {
+        buf << "    case " << e.name << "::" << val << ":\n"
+            << "      return \"" << e.name << "::" << val << "\";\n";
+      } else {
+        buf << "    case " << val << ":\n"
+            << "      return \"" << val << "\";\n";
+      }
+    }
+
+    buf << "  }\n"
+        << "  return \"\";\n"
+        << "}\n\n";
+  }
+
+  return buf.str();
+}
 
 bool parse_context::is_eof() const {
   return m_buffer.eof();

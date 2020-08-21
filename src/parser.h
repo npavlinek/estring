@@ -39,16 +39,16 @@ class parse_context {
   parse_context(const std::string& code);
 
   std::vector<enum_info> parse();
-  static std::string gen_code(const std::vector<enum_info>& enums);
+  static std::string gen_code(const std::vector<enum_info>& enums) noexcept;
 
  private:
-  bool is_eof() const;
-  int prev_char();
-  int next_char();
+  bool is_eof() const noexcept;
+  int prev_char() noexcept;
+  int next_char() noexcept;
 
-  void consume_whitespace();
-  std::string read_ident();
-  std::string read_integer();
+  void consume_whitespace() noexcept;
+  std::string read_ident() noexcept;
+  std::string read_integer() noexcept;
 
   std::unique_ptr<cpp_token> next_token();
   std::unique_ptr<cpp_token> peek_token();

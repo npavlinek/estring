@@ -38,12 +38,6 @@ std::vector<enum_info> parse_context::parse() {
       einfo.scoped = false;
     }
 
-    // This is a bit of a hack. Because of the way this loop works, it treats
-    // any 'enum' it encounters as a keyword, this is a problem if that 'enum'
-    // is not actually a keyword (e.g. 'enum' appears in a comment).
-    //
-    // So here we check if the token after that 'enum' is an IDENT and we read
-    // the enum name if that's the case, otherwise we ignore it.
     token = peek_token();
     if (token->type == cpp_token_type::IDENT) {
       token = next_token();
@@ -99,7 +93,8 @@ std::vector<enum_info> parse_context::parse() {
   return enums;
 }
 
-std::string parse_context::gen_code(const std::vector<enum_info>& enums) {
+std::string parse_context::gen_code(
+    const std::vector<enum_info>& enums) noexcept {
   std::ostringstream buf;
 
   for (const auto& e : enums) {
@@ -129,22 +124,22 @@ std::string parse_context::gen_code(const std::vector<enum_info>& enums) {
   return buf.str();
 }
 
-bool parse_context::is_eof() const {
+bool parse_context::is_eof() const noexcept {
   return m_buffer.eof();
 }
 
-int parse_context::prev_char() {
+int parse_context::prev_char() noexcept {
   if (m_buffer.tellg() != 0) {
     m_buffer.unget();
   }
   return m_buffer.peek();
 }
 
-int parse_context::next_char() {
+int parse_context::next_char() noexcept {
   return is_eof() ? EOF : m_buffer.get();
 }
 
-void parse_context::consume_whitespace() {
+void parse_context::consume_whitespace() noexcept {
   int c;
   FOR_EACH_CHAR(c) {
     if (!std::isspace(c)) {
@@ -154,7 +149,7 @@ void parse_context::consume_whitespace() {
   prev_char();
 }
 
-std::string parse_context::read_ident() {
+std::string parse_context::read_ident() noexcept {
   int c;
   std::ostringstream buf;
   m_last_token_size = 0;
@@ -169,7 +164,7 @@ std::string parse_context::read_ident() {
   return buf.str();
 }
 
-std::string parse_context::read_integer() {
+std::string parse_context::read_integer() noexcept {
   int c;
   std::ostringstream buf;
   m_last_token_size = 0;

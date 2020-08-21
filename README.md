@@ -1,5 +1,11 @@
 # enum-to-string
 
+## Requirements
+
+- C++11 compiler
+- C++ STL
+- Catch2 for tests
+
 ## Build
 
 ```sh

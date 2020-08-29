@@ -1,14 +1,12 @@
 cmake_minimum_required(VERSION 3.9)
 
-set(PNAME enum_to_string)
-string(REPLACE "_" "-" EXECUTABLE_NAME ${PNAME})
+set(PNAME enum-to-string)
 
 project(
   ${PNAME}
   VERSION 0.0.1
   DESCRIPTION ""
-  LANGUAGES CXX
-)
+  LANGUAGES CXX)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -84,9 +82,9 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 endif()
 
 add_subdirectory(src)
-target_compile_options(${EXECUTABLE_NAME} PRIVATE ${compiler_flags})
+target_compile_options(${PNAME} PRIVATE ${compiler_flags})
 
 if(BUILD_TESTS)
   add_subdirectory(test)
-  target_compile_options(run-tests PRIVATE ${compiler_flags})
+  target_compile_options(tests PRIVATE ${compiler_flags})
 endif()

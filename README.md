@@ -16,53 +16,54 @@ cmake --build build
 ## Use
 
 ```sh
-./build/bin/enum-to-string <input_cpp_file>
+enum-to-string <input_cpp_file>
 ```
 
 ## Example
 
-Given C++ code with an enum, this:
+Given a C++ enum like this:
 
 ```cpp
-enum class cpp_token_type {
-  CLOSE_CURLY_BRACE,
-  COLON,
-  COMMA,
-  EOS,
-  EQUALS,
-  IDENT,
-  INTEGER,
-  OPEN_CURLY_BRACE,
-  SEMICOLON,
-  UNKNOWN
+enum class cpp_token_type
+{
+  close_curly_brace,
+  colon,
+  comma,
+  end_of_stream,
+  equals,
+  ident,
+  integer,
+  open_curly_brace,
+  semicolon,
+  unknown
 };
 ```
 
-gets turned into:
+a `to_string` function like this gets generated:
 
 ```cpp
-const char* to_string(const cpp_token_type type) {
+const char* to_string(const cpp_token_type type) noexcept {
   switch (type) {
-    case cpp_token_type::CLOSE_CURLY_BRACE:
-      return "cpp_token_type::CLOSE_CURLY_BRACE";
-    case cpp_token_type::COLON:
-      return "cpp_token_type::COLON";
-    case cpp_token_type::COMMA:
-      return "cpp_token_type::COMMA";
-    case cpp_token_type::EOS:
-      return "cpp_token_type::EOS";
-    case cpp_token_type::EQUALS:
-      return "cpp_token_type::EQUALS";
-    case cpp_token_type::IDENT:
-      return "cpp_token_type::IDENT";
-    case cpp_token_type::INTEGER:
-      return "cpp_token_type::INTEGER";
-    case cpp_token_type::OPEN_CURLY_BRACE:
-      return "cpp_token_type::OPEN_CURLY_BRACE";
-    case cpp_token_type::SEMICOLON:
-      return "cpp_token_type::SEMICOLON";
-    case cpp_token_type::UNKNOWN:
-      return "cpp_token_type::UNKNOWN";
+  case cpp_token_type::close_curly_brace:
+    return "cpp_token_type::close_curly_brace";
+  case cpp_token_type::colon:
+    return "cpp_token_type::colon";
+  case cpp_token_type::comma:
+    return "cpp_token_type::comma";
+  case cpp_token_type::eos:
+    return "cpp_token_type::eos";
+  case cpp_token_type::equals:
+    return "cpp_token_type::equals";
+  case cpp_token_type::ident:
+    return "cpp_token_type::ident";
+  case cpp_token_type::integer:
+    return "cpp_token_type::integer";
+  case cpp_token_type::open_curly_brace:
+    return "cpp_token_type::open_curly_brace";
+  case cpp_token_type::semicolon:
+    return "cpp_token_type::semicolon";
+  case cpp_token_type::unknown:
+    return "cpp_token_type::unknown";
   }
   return "";
 }

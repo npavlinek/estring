@@ -1,0 +1,5 @@
+libs =
+
+exe{estring}: {hxx ixx txx cxx}{**} $libs testscript
+
+cxx.poptions =+ "-I$out_root" "-I$src_root"

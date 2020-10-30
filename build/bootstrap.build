@@ -1,4 +1,4 @@
-project = stringifier
+project = estring
 
 using version
 using config

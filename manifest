@@ -1,7 +1,7 @@
 : 1
-name: stringifier
+name: estring
 version: 0.1.0-a.0.z
-summary: C/C++ enum stringifier
+summary: C++ enum stringifier
 license: MIT ; MIT License
 description-file: README.md
 depends: * build2 >= 0.13.0

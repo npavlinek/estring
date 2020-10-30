@@ -1,4 +1,4 @@
-# file     : stringifier/testscript
+# file     : estring/testscript
 # license  : MIT; see accompanying LICENSE file
 
 : c-style-enum

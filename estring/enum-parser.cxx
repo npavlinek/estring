@@ -1,7 +1,7 @@
-// file     : stringifier/enum-parser.cxx
+// file     : estring/enum-parser.cxx
 // license  : MIT; see accompanying LICENSE file
 
-#include <stringifier/enum-parser.hxx>
+#include <estring/enum-parser.hxx>
 
 #include <cctype>
 #include <memory>

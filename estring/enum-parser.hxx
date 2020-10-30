@@ -1,4 +1,4 @@
-// file     : stringifier/enum-parser.hxx
+// file     : estring/enum-parser.hxx
 // license  : MIT; see accompanying LICENSE file
 
 #ifndef ENUM_PARSER_HXX

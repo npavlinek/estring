@@ -1,18 +1,18 @@
-# stringifier
+# estring
 
 ## Usage
 
 ```sh
-echo <input-cpp-file> | stringifier
+echo <input-cpp-file> | estring
 ```
 
 or
 
 ```sh
-stringifier < <input-cpp-file>
+estring < <input-cpp-file>
 ```
 
-You can pass actual C++ source code files to `stringifier`, it'll parse all the
+You can pass actual C++ source code files to `estring`, it'll parse all the
 enums in the file and ignore the rest of C++ code.
 
 ### Example
@@ -93,7 +93,7 @@ generally, refer to:
 
 ## Tests
 
-`stringifier` comes with tests written in
+`estring` comes with tests written in
 [Testscript](https://www.build2.org/build2/doc/build2-testscript-manual.xhtml).
 To run them, either use `b`, if you don't have a build configuration or `bdep`,
 if you have one.

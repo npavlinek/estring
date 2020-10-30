@@ -1,10 +1,10 @@
-// file     : stringifier/stringifier.cxx
+// file     : estring/estring.cxx
 // license  : MIT; see accompanying LICENSE file
 
 #include <iostream>
 #include <sstream>
 
-#include <stringifier/enum-parser.hxx>
+#include <estring/enum-parser.hxx>
 
 using namespace std;
 

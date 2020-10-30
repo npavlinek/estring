@@ -1,10 +1,12 @@
-// SPDX-License-Identifier: Unlicense
+// file     : stringifier/enum-parser.hxx
+// license  : MIT; see accompanying LICENSE file
 
-#ifndef PARSER_H
-#define PARSER_H
+#ifndef ENUM_PARSER_HXX
+#define ENUM_PARSER_HXX
 
 #include <memory>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -28,12 +30,40 @@ struct cpp_token
   std::string lexeme;
 };
 
+class unexpected_token : public std::exception
+{
+public:
+  unexpected_token () = delete;
+
+  unexpected_token (const cpp_token_type expected_type,
+                    const cpp_token& actual_token) noexcept;
+
+  unexpected_token (const cpp_token_type expected_type,
+                    const std::string& expected_lexeme,
+                    const cpp_token& actual_token) noexcept;
+
+  virtual const char*
+  what () const noexcept override;
+
+private:
+  std::string msg_;
+};
+
 struct enum_info
 {
   bool scoped;
   std::string name;
   std::string type;
   std::vector<std::string> values;
+
+  bool
+  operator== (const enum_info& other) const noexcept
+  {
+    return scoped == other.scoped &&
+           name == other.name &&
+           type == other.type &&
+           values == other.values;
+  }
 };
 
 std::string
@@ -59,6 +89,9 @@ private:
 
   int
   next_char () noexcept;
+
+  void
+  consume_comment () noexcept;
 
   void
   consume_whitespace () noexcept;
@@ -89,4 +122,4 @@ private:
   std::size_t last_token_size_;
 };
 
-#endif // PARSER_H
+#endif // ENUM_PARSER_HXX

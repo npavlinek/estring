@@ -1,25 +1,21 @@
-# enum-to-string
+# stringifier
 
-## Requirements
-
-- C++11 compiler
-- C++ STL
-- Catch2 for tests
-
-## Build
+## Usage
 
 ```sh
-cmake -B build
-cmake --build build
+echo <input-cpp-file> | stringifier
 ```
 
-## Use
+or
 
 ```sh
-enum-to-string <input_cpp_file>
+stringifier < <input-cpp-file>
 ```
 
-## Example
+You can pass actual C++ source code files to `stringifier`, it'll parse all the
+enums in the file and ignore the rest of C++ code.
+
+### Example
 
 Given a C++ enum like this:
 
@@ -39,7 +35,7 @@ enum class cpp_token_type
 };
 ```
 
-a `to_string` function like this gets generated:
+a `to_string` function gets generated:
 
 ```cpp
 const char* to_string(const cpp_token_type type) noexcept {
@@ -69,6 +65,51 @@ const char* to_string(const cpp_token_type type) noexcept {
 }
 ```
 
+## Build
+
+### Requirements
+
+- C++11 (or later) compiler
+- build2
+
+After installing `build2`, to build just invoke `b`, like this:
+
+```sh
+b
+```
+
+Or if you want a bit more control, you can create a build configuration, for
+example:
+
+```sh
+bdep init -C @gcc cc config.cxx=g++ "config.cc.coptions=-Wall -Wextra"
+bdep update @gcc
+```
+
+For more information regarding build configurations specifically and `build2`
+generally, refer to:
+
+<https://www.build2.org/build2-toolchain/doc/build2-toolchain-intro.xhtml>
+
+## Tests
+
+`stringifier` comes with tests written in
+[Testscript](https://www.build2.org/build2/doc/build2-testscript-manual.xhtml).
+To run them, either use `b`, if you don't have a build configuration or `bdep`,
+if you have one.
+
+```sh
+b test
+```
+
+or
+
+```sh
+bdep test
+```
+
+## Install
+
 ## License
 
-The Unlicense. For more information see the `UNLICENSE` file.
+MIT. See the `LICENSE` file for more information.

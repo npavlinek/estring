@@ -1,6 +1,6 @@
 : 1
 name: estring
-version: 0.1.0-a.0.z
+version: 0.1.0
 summary: C++ enum stringifier
 license: MIT ; MIT License
 description-file: README.md

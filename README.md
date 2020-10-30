@@ -110,6 +110,29 @@ bdep test
 
 ## Install
 
+First create a build configuration in a directory of your choosing. We'll call
+it `estring-install`. The most important option is `config.install.root`, it
+tells `build2` where you want it to install `estring`. In our case we'll install
+it to `~/.local`.
+
+```sh
+bpkg create -d estring-install cc \
+  config.cxx=g++                  \
+  config.cc.coptions=-O2          \
+  config.install.root=~/.local
+```
+
+Change into the newly created directory, build `estring` and install it:
+
+```sh
+cd estring-install
+bpkg build estring@https://gitlab.com/nipav/estring.git
+bpkg install estring
+```
+
+This process is documented in more detail
+[here](https://www.build2.org/build2-toolchain/doc/build2-toolchain-intro.xhtml#guide-consume-pkg).
+
 ## License
 
 MIT. See the `LICENSE` file for more information.

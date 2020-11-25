@@ -1,128 +1,161 @@
 # file     : estring/testscript
 # license  : MIT; see accompanying LICENSE file
 
+:
 : c-style-enum
-: Test C-style enum code generation.
 :
 $* <<EOI >>EOO == 0
 enum mybool { TRUE, FALSE };
 EOI
-const char* to_string(const mybool type) noexcept {
-  switch (type) {
-  case TRUE:
-    return "TRUE";
-  case FALSE:
-    return "FALSE";
-  }
-  return "";
+const char* to_string(const mybool type) noexcept
+{
+	switch (type)
+	{
+	case TRUE:
+		return "TRUE";
+	case FALSE:
+		return "FALSE";
+	}
+	return "";
 }
 EOO
 
+:
 : cxx-style-enum
-: Test C++-style enum code generation.
 :
 $* <<EOI >>EOO == 0
 enum class rgb { red, green, blue };
 EOI
-const char* to_string(const rgb type) noexcept {
-  switch (type) {
-  case rgb::red:
-    return "rgb::red";
-  case rgb::green:
-    return "rgb::green";
-  case rgb::blue:
-    return "rgb::blue";
-  }
-  return "";
+const char* to_string(const rgb type) noexcept
+{
+	switch (type)
+	{
+	case rgb::red:
+		return "rgb::red";
+	case rgb::green:
+		return "rgb::green";
+	case rgb::blue:
+		return "rgb::blue";
+	}
+	return "";
 }
 EOO
 
+:
 : multiple-enums
-: Test multiple enum code generation.
 :
 $* <<EOI >>EOO == 0
 enum class names { john, james, jay }; enum class result { ok, error };
 EOI
-const char* to_string(const names type) noexcept {
-  switch (type) {
-  case names::john:
-    return "names::john";
-  case names::james:
-    return "names::james";
-  case names::jay:
-    return "names::jay";
-  }
-  return "";
+const char* to_string(const names type) noexcept
+{
+	switch (type)
+	{
+	case names::john:
+		return "names::john";
+	case names::james:
+		return "names::james";
+	case names::jay:
+		return "names::jay";
+	}
+	return "";
 }
 
-const char* to_string(const result type) noexcept {
-  switch (type) {
-  case result::ok:
-    return "result::ok";
-  case result::error:
-    return "result::error";
-  }
-  return "";
+const char* to_string(const result type) noexcept
+{
+	switch (type)
+	{
+	case result::ok:
+		return "result::ok";
+	case result::error:
+		return "result::error";
+	}
+	return "";
 }
 EOO
 
+:
 : anon-enum
-: Test anonymous enum code generation.
 :
 $* <<EOI >>EOO == 0
 enum { HELLO, THERE };
 EOI
-const char* to_string(const int type) noexcept {
-  switch (type) {
-  case HELLO:
-    return "HELLO";
-  case THERE:
-    return "THERE";
-  }
-  return "";
+const char* to_string(const int type) noexcept
+{
+	switch (type)
+	{
+	case HELLO:
+		return "HELLO";
+	case THERE:
+		return "THERE";
+	}
+	return "";
 }
 EOO
 
+:
+: cxx-enum-explicit-values
+:
+$* <<EOI >>EOO == 0
+enum class something { hello = 1, world = 2 };
+EOI
+const char* to_string(const something type) noexcept
+{
+	switch (type)
+	{
+	case something::hello:
+		return "something::hello";
+	case something::world:
+		return "something::world";
+	}
+	return "";
+}
+EOO
+
+:
 : syntax-error
-: Test program behavior when a syntax error occurs.
 :
 # TODO: For now ignore error message, later pattern match it.
 $* <<EOI 2>- != 0
 enum class no_type_specified : { one, two, three }
 EOI
 
+:
 : not-enum-1
-: Test code generation, or lack thereof, for something that's not an enum.
 :
 $* <<EOI >>EOO == 0
 /* enum not_an_enum { TRUE, FALSE } */
 enum class an_enum { true, false };
 EOI
-const char* to_string(const an_enum type) noexcept {
-  switch (type) {
-  case an_enum::true:
-    return "an_enum::true";
-  case an_enum::false:
-    return "an_enum::false";
-  }
-  return "";
+const char* to_string(const an_enum type) noexcept
+{
+	switch (type)
+	{
+	case an_enum::true:
+		return "an_enum::true";
+	case an_enum::false:
+		return "an_enum::false";
+	}
+	return "";
 }
 EOO
 
+:
 : not-enum-2
-: Test code generation, or lack thereof, for something that's not an enum.
 :
 $* <<EOI >>EOO == 0
 // enum not_enum { TRUE, FALSE }
 enum class an_enum { true, false, };
 EOI
-const char* to_string(const an_enum type) noexcept {
-  switch (type) {
-  case an_enum::true:
-    return "an_enum::true";
-  case an_enum::false:
-    return "an_enum::false";
-  }
-  return "";
+const char* to_string(const an_enum type) noexcept
+{
+	switch (type)
+	{
+	case an_enum::true:
+		return "an_enum::true";
+	case an_enum::false:
+		return "an_enum::false";
+	}
+	return "";
 }
 EOO
